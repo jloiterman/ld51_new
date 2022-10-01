@@ -7,50 +7,87 @@ function _init()
         pos={x=65,y=110},
         vel={x=0,y=0},
         accel={x=0,y=0},
+        xthrust={x=0.4,y=0},
         state="standing",
-        flipped=1,
+        flipped=-1,
         sprite=2,
-        xfriction=0.1
+        brake={x=0.2,y=0},
+        max_speed=2.5
     }
 end
 
 function _update60()
     global_tick+=1;
-    process_player_input(player)
-    move_player(player)
+    update_vel(player)
 end
 
-function process_player_input(p)
-    if p.state=="moving" then
-        if not btn(0) and not btn(1) then v_mults(p.accel,0) end
-        p.state="standing"
-    end
-    if p.state=="standing" then
-        if btn(0) then p.accel.x=-0.3 end
-        if btn(1) then p.accel.x=0.3 end
-        p.state="moving"
-    end
-    
-end
-
-function move_player(p)
-    if p.state=="moving" then
-        if v_mag(p.vel)>=0.2 then
-            p.vel=v_addv(p.accel,p.vel)
-            p.pos=v_addv(p.pos,p.vel)
-        else 
-            v_mults(p.vel,0) 
-        end
-    elseif p.state=="standing" then
-        p.vel=v_addv(p.accel,p.vel)
-        p.pos=v_addv(p.pos,p.vel)
-    end
-end
 
 function _draw()
     cls()
     spr(2,player.pos.x,player.pos.y)
     print(player.state)
+    print("xaccel: " .. player.accel.x)
+    print("xpos: " .. player.pos.x)
+end
+
+
+
+function getplayerspeed()
+    return v_mag(player.vel)
+end
+
+function nobuttons()
+    if (not btn(0)) and (not btn(1)) then
+        return true
+    end
+end
+
+function update_vel(p)
+    if getplayerspeed(p)==0 then
+        if btn(0) then
+            p.accel=v_addv(p.accel,v_mults(p.xthrust,-1))
+            p.vel=v_addv(p.vel,p.accel)
+            p.pos=v_addv(p.pos,p.vel)
+        end
+        if btn(1) then
+            p.accel=v_addv(p.accel,p.xthrust)
+            p.vel=v_addv(p.vel,p.accel)
+            p.pos=v_addv(p.pos,p.vel)
+        end
+    end
+
+    if getplayerspeed(p)!=0 then
+        if btn(0) then
+            p.accel=v_addv(p.accel,v_mults(p.xthrust,-1))
+            if v_mag(p.vel)>p.max_speed*-1 then
+                p.vel=v_addv(p.vel,p.accel)
+            end
+            p.pos=v_addv(p.pos,p.vel)
+        end
+        if btn(1) then
+            p.accel=v_addv(p.accel,p.xthrust)
+            if v_mag(p.vel)<p.max_speed then
+                p.vel=v_addv(p.vel,p.accel)
+            end
+            p.pos=v_addv(p.pos,p.vel)
+        end
+    end
+    if nobuttons() then
+	    if (getplayerspeed()<v_mag(p.brake)) and
+ 	 	    (getplayerspeed()>v_mag(p.brake)*-1) then
+ 	 	    p.accel=v_mults(p.accel,0)
+ 	 		p.vel=v_mults(p.vel,0)
+ 	    end		 
+ 	    if getplayerspeed()<0 then
+ 	 	    p.accel=p.brake
+ 	    end
+ 	    if getplayerspeed()>0 then
+ 	 	p.accel=v_mults(player.brake,-1)
+ 	    end
+ 	    p.vel=v_addv(p.vel,p.accel)
+        p.pos=v_addv(p.pos,p.vel)
+ 	
+     end
 end
 -->8
 --add vectors
