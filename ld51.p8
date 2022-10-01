@@ -26,8 +26,9 @@ function _draw()
     cls()
     spr(2,player.pos.x,player.pos.y)
     print(nobuttons())
+    print(getplayerspeed()<v_mag(player.brake))
     print("xaccel: " .. player.accel.x)
-    print("xpos: " .. player.pos.x)
+    print("brake: " .. player.brake.x)
     print("vel: " .. player.vel.x)
     print("playerspeed: " .. getplayerspeed())
 end
@@ -49,15 +50,16 @@ end
 
 function update_vel(p)
     if getplayerspeed(p)==0 then
-        if btn(0) then
+        if btn(0) and btn(1) then --do nothing if player pushes left and 
+        elseif btn(0) then
             p.accel=v_mults(p.xthrust,-1)
             p.vel=v_addv(p.vel,p.accel)
             p.pos=v_addv(p.pos,p.vel)
-        end
-        if btn(1) then
+        elseif btn(1) then
             p.accel=p.xthrust
             p.vel=v_addv(p.vel,p.accel)
             p.pos=v_addv(p.pos,p.vel)
+        elseif btn(2) then
         end
     end
 
@@ -78,12 +80,12 @@ function update_vel(p)
         end
     end
     if nobuttons() then
-	    if (getplayerspeed()<v_mag(p.brake)) then
+	    if (abs(getplayerspeed())<v_mag(p.brake)) then
  	 	    p.accel=v_mults(p.accel,0)
  	 		p.vel=v_mults(p.vel,0)
  	    end		 
  	    if getplayerspeed()<0 then
- 	 	    p.accel=v_mults(p.brake)
+ 	 	    p.accel=p.brake
  	    end
  	    if getplayerspeed()>0 then
  	 	    p.accel=v_mults(p.brake,-1)
