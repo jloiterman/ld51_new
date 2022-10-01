@@ -25,32 +25,37 @@ end
 function _draw()
     cls()
     spr(2,player.pos.x,player.pos.y)
-    print(player.state)
+    print(nobuttons())
     print("xaccel: " .. player.accel.x)
     print("xpos: " .. player.pos.x)
+    print("vel: " .. player.vel.x)
+    print("playerspeed: " .. getplayerspeed())
 end
 
 
 
 function getplayerspeed()
-    return v_mag(player.vel)
+    --return v_mag(player.vel)
+    return(player.vel.x)
 end
 
 function nobuttons()
     if (not btn(0)) and (not btn(1)) then
         return true
+    else 
+        return false
     end
 end
 
 function update_vel(p)
     if getplayerspeed(p)==0 then
         if btn(0) then
-            p.accel=v_addv(p.accel,v_mults(p.xthrust,-1))
+            p.accel=v_mults(p.xthrust,-1)
             p.vel=v_addv(p.vel,p.accel)
             p.pos=v_addv(p.pos,p.vel)
         end
         if btn(1) then
-            p.accel=v_addv(p.accel,p.xthrust)
+            p.accel=p.xthrust
             p.vel=v_addv(p.vel,p.accel)
             p.pos=v_addv(p.pos,p.vel)
         end
@@ -58,14 +63,14 @@ function update_vel(p)
 
     if getplayerspeed(p)!=0 then
         if btn(0) then
-            p.accel=v_addv(p.accel,v_mults(p.xthrust,-1))
-            if v_mag(p.vel)>p.max_speed*-1 then
+            p.accel=v_mults(p.xthrust,-1)
+            if v_mag(p.vel)<p.max_speed then
                 p.vel=v_addv(p.vel,p.accel)
             end
             p.pos=v_addv(p.pos,p.vel)
         end
         if btn(1) then
-            p.accel=v_addv(p.accel,p.xthrust)
+            p.accel=p.xthrust
             if v_mag(p.vel)<p.max_speed then
                 p.vel=v_addv(p.vel,p.accel)
             end
@@ -73,16 +78,15 @@ function update_vel(p)
         end
     end
     if nobuttons() then
-	    if (getplayerspeed()<v_mag(p.brake)) and
- 	 	    (getplayerspeed()>v_mag(p.brake)*-1) then
+	    if (getplayerspeed()<v_mag(p.brake)) then
  	 	    p.accel=v_mults(p.accel,0)
  	 		p.vel=v_mults(p.vel,0)
  	    end		 
  	    if getplayerspeed()<0 then
- 	 	    p.accel=p.brake
+ 	 	    p.accel=v_mults(p.brake)
  	    end
  	    if getplayerspeed()>0 then
- 	 	p.accel=v_mults(player.brake,-1)
+ 	 	    p.accel=v_mults(p.brake,-1)
  	    end
  	    p.vel=v_addv(p.vel,p.accel)
         p.pos=v_addv(p.pos,p.vel)
