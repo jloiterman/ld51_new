@@ -60,10 +60,12 @@ function update_vel(p)
     -- set the player's desired acceleration
     -- based on their input direction
     p.accel=v_mults(p.xthrust,accel)
-    -- accelerate the player, unless their
-    -- current velocity already exceeds the cap.
-    if v_mag(p.vel)<p.max_speed then
-        p.vel=v_addv(p.vel,p.accel)
+    -- accelerate the player    
+    p.vel=v_addv(p.vel,p.accel)
+    -- enforce speed cap
+    velocity_mag=v_mag(p.vel)
+    if (velocity_mag>p.max_speed) then
+        p.vel=v_mults(p.vel,p.max_speed/velocity_mag)
     end
     -- move the player
     p.pos=v_addv(p.pos,p.vel)
