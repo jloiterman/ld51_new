@@ -63,14 +63,15 @@ function update_vel(p)
     end
 
     if getplayerspeed(p)!=0 then
-        if btn(0) then
+        if btn(0) and btn(1) then -- just keep going
+            p.pos=v_addv(p.pos,p.vel)
+        elseif btn(0) then
             p.accel=v_mults(p.xthrust,-1)
             if v_mag(p.vel)<p.max_speed then
                 p.vel=v_addv(p.vel,p.accel)
             end
             p.pos=v_addv(p.pos,p.vel)
-        end
-        if btn(1) then
+        elseif btn(1) then
             p.accel=p.xthrust
             if v_mag(p.vel)<p.max_speed then
                 p.vel=v_addv(p.vel,p.accel)
