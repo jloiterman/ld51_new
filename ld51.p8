@@ -55,8 +55,6 @@ function update_vel(p)
             accel=-1
         elseif btn(1) then
             accel=1
-        elseif btn(2) then
-          -- not sure why this is here but i will leave it for now
         end
         -- if we pressed nothing, or l+r,
         -- accel will be 0 and so v_mults will return
@@ -69,7 +67,12 @@ function update_vel(p)
         -- which should be the same as p.xthrust
         -- which we had before.
         p.accel=v_mults(p.xthrust,accel)
-        p.vel=v_addv(p.vel,p.accel)
+        -- this speed-cap check isn't really going to do anything
+        -- when we're starting from a dead stop, but
+        -- it doesn't hurt anything, so let's put it in for fun.
+        if v_mag(p.vel)<p.max_speed then
+            p.vel=v_addv(p.vel,p.accel)
+        end
         p.pos=v_addv(p.pos,p.vel)
     end
 
