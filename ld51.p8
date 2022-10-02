@@ -7,12 +7,11 @@ function _init()
         pos={x=65,y=110},
         vel={x=0,y=0},
         accel={x=0,y=0},
-        xthrust={x=0.4,y=0},
+        xthrust={x=0.5,y=0},
         state="standing",
-        flipped=-1,
         sprite=2,
         brake={x=0.2,y=0},
-        max_speed=2.5
+        max_speed=3.0
     }
 end
 
