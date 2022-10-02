@@ -53,9 +53,9 @@ function update_vel(p)
     if btn(0) and btn(1) then -- keep on keepin' on
     elseif not(btn(0)) and not(btn(1)) then -- coast to a stop
  	 	    if getplayerspeed()<0 then
- 	 	        accel=min(0.2,v_mag(p.vel))
+ 	 	        accel=2*min(0.2,v_mag(p.vel))
  	 	    elseif getplayerspeed()>0 then
- 	 	        accel=max(-0.2,-1*v_mag(p.vel))
+ 	 	        accel=2*max(-0.2,-1*v_mag(p.vel))
  	 	    end 	 	     
     elseif btn(0) then -- try to go left
         accel=-1
