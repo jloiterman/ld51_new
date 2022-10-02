@@ -51,6 +51,12 @@ function update_vel(p)
     -- find the player's desired movement direction
     accel=0
     if btn(0) and btn(1) then -- keep on keepin' on
+    elseif not(btn(0)) and not(btn(1)) then -- coast to a stop
+ 	 	    if getplayerspeed()<0 then
+ 	 	        accel=min(0.2,v_mag(p.vel))
+ 	 	    elseif getplayerspeed()>0 then
+ 	 	        accel=max(-0.2,-1*v_mag(p.vel))
+ 	 	    end 	 	     
     elseif btn(0) then -- try to go left
         accel=-1
     elseif btn(1) then -- try to go right
@@ -67,23 +73,6 @@ function update_vel(p)
     if (velocity_mag>p.max_speed) then
         p.vel=v_mults(p.vel,p.max_speed/velocity_mag)
     end
-
-    -- apply braking if the player isn't
-    -- pressing anything
-    if nobuttons() then
-	     if (abs(getplayerspeed())<v_mag(p.brake)) then
- 	 	    p.accel=v_mults(p.accel,0)
- 	 	   	p.vel=v_mults(p.vel,0)
- 	    end		 
- 	    if getplayerspeed()<0 then
- 	 	    p.accel=p.brake
- 	    end
- 	    if getplayerspeed()>0 then
- 	 	    p.accel=v_mults(p.brake,-1)
- 	    end
- 	    p.vel=v_addv(p.vel,p.accel)
-    end
-
     -- move the player
     p.pos=v_addv(p.pos,p.vel)
 end
