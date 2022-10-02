@@ -49,17 +49,28 @@ end
 
 function update_vel(p)
     if getplayerspeed(p)==0 then
-        if btn(0) and btn(1) then --do nothing if player pushes left and 
+        accel=0
+        if btn(0) and btn(1) then --do nothing if player pushes left and right
         elseif btn(0) then
-            p.accel=v_mults(p.xthrust,-1)
-            p.vel=v_addv(p.vel,p.accel)
-            p.pos=v_addv(p.pos,p.vel)
+            accel=-1
         elseif btn(1) then
-            p.accel=p.xthrust
-            p.vel=v_addv(p.vel,p.accel)
-            p.pos=v_addv(p.pos,p.vel)
+            accel=1
         elseif btn(2) then
+          -- not sure why this is here but i will leave it for now
         end
+        -- if we pressed nothing, or l+r,
+        -- accel will be 0 and so v_mults will return
+        -- a zero-length vector (no acceleration).
+        -- if we pressed l, accel will be -1 and
+        -- it will be equivalent to v_mults(p.xthrust,-1)
+        -- like we had before.
+        -- if we pressed r, accel will be 1
+        -- and it will be equivalent to v_mults(p.xthrust,1)
+        -- which should be the same as p.xthrust
+        -- which we had before.
+        p.accel=v_mults(p.xthrust,accel)
+        p.vel=v_addv(p.vel,p.accel)
+        p.pos=v_addv(p.pos,p.vel)
     end
 
     if getplayerspeed(p)!=0 then
