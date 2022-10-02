@@ -67,13 +67,13 @@ function update_vel(p)
     if (velocity_mag>p.max_speed) then
         p.vel=v_mults(p.vel,p.max_speed/velocity_mag)
     end
-    -- move the player
-    p.pos=v_addv(p.pos,p.vel)
 
+    -- apply braking if the player isn't
+    -- pressing anything
     if nobuttons() then
-	    if (abs(getplayerspeed())<v_mag(p.brake)) then
+	     if (abs(getplayerspeed())<v_mag(p.brake)) then
  	 	    p.accel=v_mults(p.accel,0)
- 	 		p.vel=v_mults(p.vel,0)
+ 	 	   	p.vel=v_mults(p.vel,0)
  	    end		 
  	    if getplayerspeed()<0 then
  	 	    p.accel=p.brake
@@ -82,9 +82,10 @@ function update_vel(p)
  	 	    p.accel=v_mults(p.brake,-1)
  	    end
  	    p.vel=v_addv(p.vel,p.accel)
-        p.pos=v_addv(p.pos,p.vel)
- 	
-     end
+    end
+
+    -- move the player
+    p.pos=v_addv(p.pos,p.vel)
 end
 -->8
 --add vectors
