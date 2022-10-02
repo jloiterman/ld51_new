@@ -48,48 +48,26 @@ function nobuttons()
 end
 
 function update_vel(p)
-    if getplayerspeed(p)==0 then
-        accel=0
-        if btn(0) and btn(1) then --do nothing if player pushes left and right
-        elseif btn(0) then
-            accel=-1
-        elseif btn(1) then
-            accel=1
-        end
-        -- if we pressed nothing, or l+r,
-        -- accel will be 0 and so v_mults will return
-        -- a zero-length vector (no acceleration).
-        -- if we pressed l, accel will be -1 and
-        -- it will be equivalent to v_mults(p.xthrust,-1)
-        -- like we had before.
-        -- if we pressed r, accel will be 1
-        -- and it will be equivalent to v_mults(p.xthrust,1)
-        -- which should be the same as p.xthrust
-        -- which we had before.
-        p.accel=v_mults(p.xthrust,accel)
-        -- this speed-cap check isn't really going to do anything
-        -- when we're starting from a dead stop, but
-        -- it doesn't hurt anything, so let's put it in for fun.
-        if v_mag(p.vel)<p.max_speed then
-            p.vel=v_addv(p.vel,p.accel)
-        end
-        p.pos=v_addv(p.pos,p.vel)
+    -- find the player's desired movement direction
+    accel=0
+    if btn(0) and btn(1) then -- keep on keepin' on
+    elseif btn(0) then -- try to go left
+        accel=-1
+    elseif btn(1) then -- try to go right
+        accel=1
     end
 
-    if getplayerspeed(p)!=0 then
-        accel=0
-        if btn(0) and btn(1) then -- just keep going
-        elseif btn(0) then
-            accel=-1
-        elseif btn(1) then
-            accel=1
-        end
-        p.accel=v_mults(p.xthrust,accel)
-        if v_mag(p.vel)<p.max_speed then
-            p.vel=v_addv(p.vel,p.accel)
-        end
-        p.pos=v_addv(p.pos,p.vel)
+    -- set the player's desired acceleration
+    -- based on their input direction
+    p.accel=v_mults(p.xthrust,accel)
+    -- accelerate the player, unless their
+    -- current velocity already exceeds the cap.
+    if v_mag(p.vel)<p.max_speed then
+        p.vel=v_addv(p.vel,p.accel)
     end
+    -- move the player
+    p.pos=v_addv(p.pos,p.vel)
+
     if nobuttons() then
 	    if (abs(getplayerspeed())<v_mag(p.brake)) then
  	 	    p.accel=v_mults(p.accel,0)
