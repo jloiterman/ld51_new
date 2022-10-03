@@ -24,11 +24,7 @@ end
 function _draw()
     cls()
     spr(2,player.pos.x,player.pos.y)
-    print(getplayerspeed()<v_mag(player.brake))
-    print("xaccel: " .. player.accel.x)
-    print("brake: " .. player.brake.x)
-    print("vel: " .. player.vel.x)
-    print("playerspeed: " .. getplayerspeed())
+    print(btn(2))
 end
 
 
@@ -44,12 +40,15 @@ function update_vel(p)
     -- find the player's desired movement direction
     accel=0
     if btn(0) and btn(1) then -- keep on keepin' on
+        accel=-2*sgn(p.vel.x)*min(0.2,abs(v_mag(p.vel)))
     elseif not(btn(0)) and not(btn(1)) then -- coast to a stop
         accel=-2*sgn(p.vel.x)*min(0.2,abs(v_mag(p.vel)))
     elseif btn(0) then -- try to go left
         accel=-1
     elseif btn(1) then -- try to go right
         accel=1
+    elseif btn(2) then
+        print("button2")
     end
 
     -- set the player's desired acceleration
