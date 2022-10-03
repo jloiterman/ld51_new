@@ -24,7 +24,6 @@ end
 function _draw()
     cls()
     spr(2,player.pos.x,player.pos.y)
-    print(nobuttons())
     print(getplayerspeed()<v_mag(player.brake))
     print("xaccel: " .. player.accel.x)
     print("brake: " .. player.brake.x)
@@ -39,13 +38,7 @@ function getplayerspeed()
     return(player.vel.x)
 end
 
-function nobuttons()
-    if (not btn(0)) and (not btn(1)) then
-        return true
-    else 
-        return false
-    end
-end
+
 
 function update_vel(p)
     -- find the player's desired movement direction
