@@ -8,6 +8,7 @@ function _init()
         vel={x=0,y=0},
         accel={x=0,y=0},
         xthrust={x=0.5,y=0},
+        ythrust={x=0,y=2},
         state="standing",
         sprite=2,
         brake={x=0.2,y=0},
@@ -38,22 +39,27 @@ end
 
 function update_vel(p)
     -- find the player's desired movement direction
-    accel=0
+    accel={x=0,y=player.accel.y}
     if btn(0) and btn(1) then -- keep on keepin' on
-        accel=-2*sgn(p.vel.x)*min(0.2,abs(v_mag(p.vel)))
+        accel.x=-2*sgn(p.vel.x)*min(0.2,abs(v_mag(p.vel)))
     elseif not(btn(0)) and not(btn(1)) then -- coast to a stop
-        accel=-2*sgn(p.vel.x)*min(0.2,abs(v_mag(p.vel)))
+        accel.x=-2*sgn(p.vel.x)*min(0.2,abs(v_mag(p.vel)))
     elseif btn(0) then -- try to go left
-        accel=-1
+        accel.x=-1
     elseif btn(1) then -- try to go right
-        accel=1
-    elseif btn(2) then
-        print("button2")
+        accel.x=1
+    end
+
+    if btn(2) then
+        accel.y=-2
+    elseif not btn(2)  and accel.y!=0 then
+        accel.y+=0.2
     end
 
     -- set the player's desired acceleration
     -- based on their input direction
-    p.accel=v_mults(p.xthrust,accel)
+    p.accel=v_mults(p.xthrust,accel.x)
+    p.accel.y=accel.y
     -- accelerate the player    
     p.vel=v_addv(p.vel,p.accel)
     -- enforce speed cap
