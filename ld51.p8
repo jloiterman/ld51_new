@@ -14,6 +14,13 @@ function _init()
         brake={x=0.2,y=0},
         max_speed=3.0
     }
+
+    world={
+        topleftx=0,
+        toplefty=0,
+        bottomrightx=127,
+        bottomrighty=127
+    }
 end
 
 function _update60()
@@ -25,6 +32,7 @@ end
 function _draw()
     cls()
     spr(2,player.pos.x,player.pos.y)
+    rect(world.topleftx,world.toplefty,world.bottomrightx,world.bottomrighty,7)
     print(btn(2))
 end
 
