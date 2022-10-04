@@ -35,6 +35,7 @@ function _draw()
     rect(world.topleftx,world.toplefty,world.bottomrightx,world.bottomrighty,7)
     print(btn(2))
     print("yaccel: " .. player.accel.y)
+    print("xaccel: " .. player.accel.x)
     print("x: " .. player.pos.x)
 end
 
@@ -83,8 +84,8 @@ function update_vel(p)
     --block the player from leaving the boundaries
     if p.pos.x>=122 then p.pos.x=122 
         elseif p.pos.x<=1 then p.pos.x=0 
-        elseif p.pos.y<=0 then p.pos.y=0 
-        elseif p.pos.y>=118 then p.pos.y=118
+        elseif p.pos.y<=0 then p.pos.y=1 p.accel.y=-0.01
+        elseif p.pos.y>=118 then p.pos.y=117 p.accel.y=0
     end
 end
 -->8
