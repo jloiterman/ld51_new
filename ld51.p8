@@ -34,6 +34,8 @@ function _draw()
     spr(2,player.pos.x,player.pos.y)
     rect(world.topleftx,world.toplefty,world.bottomrightx,world.bottomrighty,7)
     print(btn(2))
+    print("yaccel: " .. player.accel.y)
+    print("x: " .. player.pos.x)
 end
 
 
@@ -59,7 +61,7 @@ function update_vel(p)
     end
 
     if btn(2) then
-        accel.y=-2
+        accel.y=-5
     elseif not btn(2)  and accel.y!=0 then
         accel.y+=0.2
     end
@@ -77,6 +79,13 @@ function update_vel(p)
     end
     -- move the player
     p.pos=v_addv(p.pos,p.vel)
+
+    --block the player from leaving the boundaries
+    if p.pos.x>=122 then p.pos.x=122 
+        elseif p.pos.x<=1 then p.pos.x=0 
+        elseif p.pos.y<=0 then p.pos.y=0 
+        elseif p.pos.y>=118 then p.pos.y=118
+    end
 end
 -->8
 --add vectors
