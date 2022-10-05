@@ -3,16 +3,21 @@ version 38
 __lua__
 function _init()
     global_tick=0
+    gravity={x=0,y=0.25}
+    toggle=false
     player = {
-        pos={x=65,y=110},
+        pos={x=65,y=35},
         vel={x=0,y=0},
         accel={x=0,y=0},
-        xthrust={x=0.5,y=0},
-        ythrust={x=0,y=2},
+        xthrust={x=0.2,y=0},
+        ythrust={x=0,y=-0.5},
         state="standing",
         sprite=2,
         brake={x=0.2,y=0},
-        max_speed=3.0
+        max_speed=3.0,
+        collision=false,
+        cvector={x=0,y=0}
+        
     }
 
     world={
@@ -24,8 +29,11 @@ function _init()
 end
 
 function _update60()
+    player.accel={x=0,y=0}
     global_tick+=1;
+    process_collisions(player)
     update_vel(player)
+    move_player(player)
 end
 
 
@@ -34,9 +42,9 @@ function _draw()
     spr(2,player.pos.x,player.pos.y)
     rect(world.topleftx,world.toplefty,world.bottomrightx,world.bottomrighty,7)
     print(btn(2))
-    print("yaccel: " .. player.accel.y)
-    print("xaccel: " .. player.accel.x)
+    print("pos: {" .. player.pos.x .. ", " .. player.pos.y .. "}")
     print("x: " .. player.pos.x)
+    print("accel: {" .. player.accel.x .. ", " .. player.accel.y .. "}")
 end
 
 
@@ -46,47 +54,54 @@ function getplayerspeed()
     return(player.vel.x)
 end
 
+function move_player(p)
+     p.pos=v_addv(p.pos,p.vel)
+end
 
+function process_collisions(p)
+    if p.pos.y>118 then p.pos.y=118 p.vel.y=0 p.accel.y=gravity.y end
+    if p.pos.y<0 then p.pos.y=0 p.vel.y=0 p.accel.y=gravity.y end
+    if p.pos.x<0 then p.pos.x=0 p.vel.x=0 p.accel.x=0 end
+    if p.pos.x>122 then p.pos.x=122 p.vel.x=0 p.accel.x=0 end
+end
 
 function update_vel(p)
-    -- find the player's desired movement direction
-    accel={x=0,y=player.accel.y}
-    if btn(0) and btn(1) then -- keep on keepin' on
-        accel.x=-2*sgn(p.vel.x)min(0.2,abs(v_mag(p.vel)))
-        if abs(player.vel.x)<player.brake then player.accel.x,player.vel.x=0,0 end
-    elseif not(btn(0)) and not(btn(1)) then -- coast to a stop
-        accel.x=-2*sgn(p.vel.x)min(0.2,abs(v_mag(p.vel)))
-    elseif btn(0) then -- try to go left
-        accel.x=-1
-    elseif btn(1) then -- try to go right
-        accel.x=1
-    end
-
+    accel=0
+    p.accel.x=0
+    p.accel=v_addv(p.accel,gravity) --gravity always applies
     if btn(2) then
-        accel.y=-5
-    elseif not btn(2)  and accel.y!=0 then
-        accel.y+=0.2
+        p.accel=v_addv(p.accel,p.ythrust)
     end
 
-    -- set the player's desired acceleration
-    -- based on their input direction
-    p.accel=v_mults(p.xthrust,accel.x)
-    p.accel.y=accel.y
-    -- accelerate the player    
-    p.vel=v_addv(p.vel,p.accel)
-    -- enforce speed cap
-    velocity_mag=v_mag(p.vel)
-    if (velocity_mag>p.max_speed) then
-        p.vel=v_mults(p.vel,p.max_speed/velocity_mag)
-    end
-    -- move the player
-    p.pos=v_addv(p.pos,p.vel)
 
-    --block the player from leaving the boundaries
-    if p.pos.x>=122 then p.pos.x=122 
-        elseif p.pos.x<=1 then p.pos.x=0 
-        elseif p.pos.y<=0 then p.pos.y=1 p.accel.y=-0.01
-        elseif p.pos.y>=118 then p.pos.y=117 p.accel.y=0
+    if btnp(4) then
+        gravity=v_mults(gravity,-1)
+        player.ythrust=v_mults(player.ythrust,-1)
+    elseif btnp(5) then
+        if toggle==false then
+        gravity={x=-1,y=0}
+        toggle=true
+        else 
+        gravity={x=0,y=0.25}
+        toggle=false
+        end
+    end
+
+    if btn(0) and not btn(1) then
+        accel=-1
+        p.accel=v_addv(p.accel,v_mults(p.xthrust,accel))
+    elseif btn(1) and not btn(0) then
+        accel=1
+        p.accel=v_addv(p.accel,v_mults(p.xthrust,accel))
+    elseif (btn(0) and btn(1)) or (not btn(0) and not btn(1)) and p.vel.x!=0 then 
+        p.accel.x=p.brake.x*(sgn(p.vel.x)*-1)
+    end
+
+    if collision==false then
+        p.vel=v_addv(p.vel,p.accel)
+    else
+        p.accel=v_addv(p.accel,p.cvector)
+        p.vel=v_addv(p.vel,p.accel) 
     end
 end
 -->8
