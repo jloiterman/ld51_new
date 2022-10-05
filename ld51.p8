@@ -48,51 +48,29 @@ function nobuttons()
 end
 
 function update_vel(p)
-    if getplayerspeed(p)==0 then
-        if btn(0) and btn(1) then --do nothing if player pushes left and 
-        elseif btn(0) then
-            p.accel=v_mults(p.xthrust,-1)
-            p.vel=v_addv(p.vel,p.accel)
-            p.pos=v_addv(p.pos,p.vel)
-        elseif btn(1) then
-            p.accel=p.xthrust
-            p.vel=v_addv(p.vel,p.accel)
-            p.pos=v_addv(p.pos,p.vel)
-        elseif btn(2) then
-        end
+    -- find the player's desired movement direction
+    accel=0
+    if btn(0) and btn(1) then -- keep on keepin' on
+    elseif not(btn(0)) and not(btn(1)) then -- coast to a stop
+        accel=-2*sgn(p.vel.x)*min(0.2,abs(v_mag(p.vel)))
+    elseif btn(0) then -- try to go left
+        accel=-1
+    elseif btn(1) then -- try to go right
+        accel=1
     end
 
-    if getplayerspeed(p)!=0 then
-        if btn(0) then
-            p.accel=v_mults(p.xthrust,-1)
-            if v_mag(p.vel)<p.max_speed then
-                p.vel=v_addv(p.vel,p.accel)
-            end
-            p.pos=v_addv(p.pos,p.vel)
-        end
-        if btn(1) then
-            p.accel=p.xthrust
-            if v_mag(p.vel)<p.max_speed then
-                p.vel=v_addv(p.vel,p.accel)
-            end
-            p.pos=v_addv(p.pos,p.vel)
-        end
+    -- set the player's desired acceleration
+    -- based on their input direction
+    p.accel=v_mults(p.xthrust,accel)
+    -- accelerate the player    
+    p.vel=v_addv(p.vel,p.accel)
+    -- enforce speed cap
+    velocity_mag=v_mag(p.vel)
+    if (velocity_mag>p.max_speed) then
+        p.vel=v_mults(p.vel,p.max_speed/velocity_mag)
     end
-    if nobuttons() then
-	    if (abs(getplayerspeed())<v_mag(p.brake)) then
- 	 	    p.accel=v_mults(p.accel,0)
- 	 		p.vel=v_mults(p.vel,0)
- 	    end		 
- 	    if getplayerspeed()<0 then
- 	 	    p.accel=p.brake
- 	    end
- 	    if getplayerspeed()>0 then
- 	 	    p.accel=v_mults(p.brake,-1)
- 	    end
- 	    p.vel=v_addv(p.vel,p.accel)
-        p.pos=v_addv(p.pos,p.vel)
- 	
-     end
+    -- move the player
+    p.pos=v_addv(p.pos,p.vel)
 end
 -->8
 --add vectors
