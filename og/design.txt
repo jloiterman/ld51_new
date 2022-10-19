@@ -1,0 +1,132 @@
+EXECUTIVE SUMMARY (concept, audience, core game loop)
+
+-Concept
+
+	Graviton10 is an arcade-style mini game built around easily accessible, physics-based, action gameplay. The game should have a retro/arcade feel but something fresh and new (white background vs. black? Weird color palette?). The player is a mad scientist who, after experimenting with quantum gravity, somehow broke physics and gravity such that it changes every 10 seconds. 
+
+	The player's only objective is to travel from the START of a level to the GOAL by walking and using a jetpack. Although there are obstacles and objects in the world, the main obstacle is gravity, which changes direction every 10 seconds. Combined with the jetpack, the player should be flying all over the place; barely maintaining control. 
+
+-Audience
+	
+	Ludum Dare 51 observers and participants
+
+-Core game loop
+
+	- attempt to travel to the goal on each level/iteration
+	- set a bearing on the goal until gravity changes
+	- get blown off course when gravity changes and "right the ship"
+	- use the limited-use shield to block shots
+	- collect items to add to shield
+
+
+GAMEPLAY (objectives, game progressions, GUI, etc.)
+
+-objectives
+	(1) get to the goal
+	(2) don't get blown off course
+	(3) don't die
+
+
+-Progression
+
+	As this is a jam game, the only progression would be more levels with different collections of fixed and movable (I.e. responding to gravity) objects) obstacles
+
+- GUI
+	The player needs a clear visual indicator of: 
+	(1) which direction gravity is flowing; and
+	(2) how much shield is available.
+
+ 
+MECHANICS (Rules, Combat, Physics, etc.)
+
+-Rules
+	The player begins at the START and must travel to the GOAL.
+	One of three things happens: (1) player reaches the goal and starts a new level; (2) Player dies; (3) player runs out of time.
+
+- Combat
+	The player can get shot by projectiles, but can't shoot back.  Player only has a shield to defend against projectiles, and the shield has a limit on how much it can be used. 
+
+-Physics
+
+	The player's main tool is the jetpack, which allows the player to launch vertically and to adjust movement laterally by a *few* degrees. 
+
+	The player needs to use a combination of jet pack (vertical) and walking (horizontal) to navigate to the goal.
+
+	Both the player and any objects not fixed to the ground or to some point in space will respond to changes in the direction and magnitude of gravity.
+
+	Players will collide with the ground and with objects. Some objects will be 'sticky', some will be 'bouncy' and others will be somewhere in between. 
+
+Controls
+
+	- Pushing 'up' uses the jetpack and causes the player to accelerate up.
+	- Player can float in a stationary position relative to the y-axis by pushing down.
+	- A button activates shield
+	- left and right walk left and right (x-axis)
+
+GAME ELEMENTS (Enemies, Levels, Weapons, Powers, Scoring)
+
+Enemies
+	- gravity
+	- fixed obstacles
+	- movable obstacles
+	- turrets (shots at player)
+
+Levels
+	- each level has a different START and GOAL
+	- each level has a different collection of movable and immovable obstacles
+	- the levels are procedurally generated.
+
+Weapons
+	- Player has no weapons, only the shield
+
+Shield
+	- Shield blocks shots
+	- Shield can neutralize the affects of 'sticky' or 'bouncy' obstacles
+
+Scoring
+	- Players get points for reach the GOAL of each level
+	- Players get points over time by staying alive.
+	- Players get a bonus if they don't use the shield
+	- Player get a bonus if they don't use the jetpack (use gravity and walking only)
+	- Players get a bonus for unused shield power
+
+
+SYSTEMS
+	- Physics System
+		- Gravity
+		- Collisions
+	- Shield Power Pickup System
+	- Particle System
+		- Jet Pack
+		- Collisions
+		- Movement effects (dust kicked up when running/stopping short)
+	- Gravity Indicator
+	
+
+ASSETS
+
+	PLAYER
+		- sprite
+		- walk animation
+		- float/jetpack animation
+		- jetpack sound
+		- pickup sound
+		- Shield power indicator
+
+	GRAVITY
+		- UI indicator
+		- Gravity change sound/music
+	MOVABLE OBJECTS
+		- sprite
+		- animations?
+		- sound effects
+	STATIC OBSTACLES/LEVEL ELEMENTS
+		- sprite
+		- sound effects?
+	MUSIC
+		- 10 seconds reset/beat-matching
+	SHIELD	
+		- sprite
+		- animation
+		- pickup sound
+`

@@ -4,7 +4,6 @@ __lua__
 function _init()
     global_tick=0
     gravity={x=0,y=0.25}
-    gravity_clock={x=110,y=15}
     toggle=false
     player = {
         pos={x=65,y=35},
@@ -46,14 +45,6 @@ function _draw()
     print("pos: {" .. player.pos.x .. ", " .. player.pos.y .. "}")
     print("x: " .. player.pos.x)
     print("accel: {" .. player.accel.x .. ", " .. player.accel.y .. "}")
-    -- draw gravity clock
-    -- todo: make this fancy and animated
-    clock_end_pos={
-     x=gravity_clock.x+sqrt(abs(gravity.x*100))*sgn(gravity.x),
-     y=gravity_clock.y+sqrt(abs(gravity.y*100))*sgn(gravity.y)
-    }
-    line(gravity_clock.x,gravity_clock.y,clock_end_pos.x,clock_end_pos.y)
-    circfill(clock_end_pos.x,clock_end_pos.y,1)
 end
 
 
@@ -102,19 +93,8 @@ function update_vel(p)
     elseif btn(1) and not btn(0) then
         accel=1
         p.accel=v_addv(p.accel,v_mults(p.xthrust,accel))
-    end
-
-    -- apply friction.
-    -- todo: make friction much stronger on the
-    -- ground than in the air.
-    p.accel.x-=p.vel.x*.1
-    p.accel.y-=p.vel.y*.1
-    -- cheap hack so the player comes to a complete stop
-    if not(btn(0) or btn(1)) and abs(p.accel.x)<0.2 and abs(p.vel.x)<.1 then
-      p.accel.x=p.vel.x*-1
-    end
-    if not(btn(2) or btn(3)) and abs(p.accel.y)<0.2 and abs(p.vel.y)<.1 then
-      p.accel.y=p.vel.y*-1
+    elseif (btn(0) and btn(1)) or (not btn(0) and not btn(1)) and p.vel.x!=0 then 
+        p.accel.x=p.brake.x*(sgn(p.vel.x)*-1)
     end
 
     if collision==false then
